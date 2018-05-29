@@ -5,7 +5,8 @@ phases:
     commands:
       # Install dependencies needed for running tests
       - npm install
-
+      # Install all angular dependencies
+      - cd angular-src && npm install && cd ..
       # Upgrade AWS CLI to the latest version
       - pip install --upgrade awscli
   pre_build:
@@ -14,6 +15,8 @@ phases:
       - npm test
   build:
     commands:
+      # build files
+      - cd angular-src && ng build
       # Use AWS SAM to package the application by using AWS CloudFormation
       - aws s3 cp --recursive public/ s3://$WEBSITE_S3_BUCKET/public/ --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
       - sed -i -e "s|assets/|$WEBSITE_S3_PREFIX/public/assets/|g" public/index.html
